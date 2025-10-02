@@ -24,7 +24,7 @@ if (TOOLCHAIN STREQUAL "gcc")
   list(APPEND TOOLCHAIN_COMMON_FLAGS
     -fdata-sections
     -ffunction-sections
-    -fsingle-precision-constant
+    # -fsingle-precision-constant  # Removed: Cortex-M7 supports double precision, and some libraries (NE-Pedal) require it
     -fno-strict-aliasing
     )
   list(APPEND TOOLCHAIN_EXE_LINKER_FLAGS
