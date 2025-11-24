@@ -12,8 +12,8 @@ GDB = $(CROSS_COMPILE)gdb
 OBJCOPY = $(CROSS_COMPILE)objcopy
 SIZE = $(CROSS_COMPILE)size
 
-CFLAGS += \
-  -fsingle-precision-constant \
+# CFLAGS += \
+#   -fsingle-precision-constant \
 
 LIBS += -lgcc -lm -lnosys
 
