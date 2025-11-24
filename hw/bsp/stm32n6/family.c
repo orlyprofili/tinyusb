@@ -57,6 +57,10 @@ typedef struct {
 
 #include "board.h"
 
+#ifndef __HAL_RCC_PWR_CLK_ENABLE
+#define __HAL_RCC_PWR_CLK_ENABLE()     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_PWR)
+#endif
+
 //--------------------------------------------------------------------+
 // MACRO TYPEDEF CONSTANT ENUM
 //--------------------------------------------------------------------+

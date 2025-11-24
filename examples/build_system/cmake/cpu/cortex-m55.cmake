@@ -3,7 +3,7 @@ if (TOOLCHAIN STREQUAL "gcc")
     -mthumb
     -mcpu=cortex-m55
     -mfloat-abi=hard
-    -mfpu=fpv5-d16
+    #TODO: check this -mfpu=fpv5-d16
     -mcmse
     )
   set(FREERTOS_PORT GCC_ARM_CM55_NTZ_NONSECURE CACHE INTERNAL "")
