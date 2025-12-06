@@ -11,7 +11,7 @@ LD = $(CC)
 GDB = $(CROSS_COMPILE)gdb
 OBJCOPY = $(CROSS_COMPILE)objcopy
 SIZE = $(CROSS_COMPILE)size
-
+#TODO: look into whether this is a good idea or not, or set uniquely for tinyusb, and not the rest
 # CFLAGS += \
 #   -fsingle-precision-constant \
 
