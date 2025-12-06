@@ -14,6 +14,9 @@ deps_mandatory = {
     'lib/lwip': ['https://github.com/lwip-tcpip/lwip.git',
                  '159e31b689577dbf69cf0683bbaffbd71fa5ee10',
                  'all'],
+    'tools/linkermap': ['https://github.com/hathach/linkermap.git',
+                        '8a8206c39d0dfd7abfa615a676b3291165fcd65c',
+                        'all'],
     'tools/uf2': ['https://github.com/microsoft/uf2.git',
                   'c594542b2faa01cc33a2b97c9fbebc38549df80a',
                   'all'],
@@ -246,7 +249,7 @@ deps_optional = {
                     'imxrt kinetis_k32l2 kinetis_kl lpc51 lpc54 lpc55 mcx mm32 msp432e4 nrf saml2x '
                     'lpc11 lpc13 lpc15 lpc17 lpc18 lpc40 lpc43 '
                     'stm32c0 stm32f0 stm32f1 stm32f2 stm32f3 stm32f4 stm32f7 stm32g0 stm32g4 stm32h5 '
-                    'stm32h7 stm32h7rs stm32l0 stm32l1 stm32l4 stm32l5 stm32u0 stm32u5 stm32wb stm32wba'
+                    'stm32h7 stm32h7rs stm32l0 stm32l1 stm32l4 stm32l5 stm32u0 stm32u5 stm32wb stm32wba '
                     'sam3x samd11 samd21 samd51 samd5x_e5x same5x same7x saml2x samg '
                     'tm4c '],
     'lib/CMSIS_6': ['https://github.com/ARM-software/CMSIS_6.git',
@@ -343,7 +346,7 @@ def main():
 
         for f in families:
             for d in deps_optional:
-                if d not in deps and f in deps_optional[d][2]:
+                if d not in deps and f in deps_optional[d][2].split():
                     deps.append(d)
 
     if print_only:
