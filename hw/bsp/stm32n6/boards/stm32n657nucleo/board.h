@@ -44,7 +44,7 @@ extern "C" {
 #define UART_DEV USART1
 #define UART_CLK_EN __HAL_RCC_USART1_CLK_ENABLE
 
-#define BOARD_TUD_RHPORT 1
+#define BOARD_TUD_RHPORT 0
 
 // VBUS Sense detection
 #define OTG_FS_VBUS_SENSE 1
@@ -263,7 +263,7 @@ static inline void board_init2(void) {
 
 void board_vbus_set(uint8_t rhport, bool state) {
   (void) state;
-  if (rhport == 1) {
+  if (rhport == BOARD_TUD_RHPORT) {
     TU_ASSERT(TCPP0203_SetGateDriverProvider(&tcpp0203_obj, TCPP0203_GD_PROVIDER_SWITCH_CLOSED) == TCPP0203_OK, );
   }
 }

@@ -21,7 +21,7 @@ set(FAMILY_MCUS STM32N6 CACHE INTERNAL "")
 # Port & Speed Selection
 # ----------------------
 if (NOT DEFINED RHPORT_DEVICE)
-  set(RHPORT_DEVICE 1)
+  set(RHPORT_DEVICE 0)
 endif ()
 if (NOT DEFINED RHPORT_HOST)
   set(RHPORT_HOST 1)

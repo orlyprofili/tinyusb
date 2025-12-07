@@ -105,6 +105,8 @@ void board_init(void) {
   /* Enable BusFault and SecureFault handlers (HardFault is default) */
   SCB->SHCSR |= (SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_SECUREFAULTENA_Msk);
 
+  __HAL_RCC_PWR_CLK_ENABLE();
+
   HAL_PWREx_EnableVddA();
   HAL_PWREx_EnableVddIO2();
   HAL_PWREx_EnableVddIO3();
@@ -161,7 +163,6 @@ void board_init(void) {
 
 
   __HAL_RCC_USB1_OTG_HS_CLK_ENABLE();
-  __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_EnableVddUSBVMEN();
   while(__HAL_PWR_GET_FLAG(PWR_FLAG_USB33RDY));
   HAL_PWREx_EnableVddUSB();
@@ -274,7 +275,40 @@ uint32_t board_millis(void) {
 
 #endif
 
+volatile uint32_t hardfault_cfsr;
+volatile uint32_t hardfault_hfsr;
+volatile uint32_t hardfault_bfar;
+volatile uint32_t hardfault_lr;
+volatile uint32_t hardfault_pc;
+volatile uint32_t hardfault_stacked_lr;
+volatile uint32_t hardfault_stacked_pc;
+volatile uint32_t hardfault_stacked_xpsr;
+volatile uint32_t hardfault_sp;
+
 void HardFault_Handler(void) {
+  __asm volatile ("mov %0, lr" : "=r" (hardfault_lr) );
+  hardfault_cfsr = SCB->CFSR;
+  hardfault_hfsr = SCB->HFSR;
+  hardfault_bfar = SCB->BFAR;
+
+  uint32_t msp = __get_MSP();
+  uint32_t psp = __get_PSP();
+  uint32_t used_sp = (hardfault_lr & 0x4U) ? psp : msp;
+  hardfault_sp = used_sp;
+
+  if (used_sp != 0) {
+    uint32_t const * stack_words = (uint32_t const *) used_sp;
+    hardfault_stacked_lr = stack_words[5];
+    hardfault_stacked_pc = stack_words[6];
+    hardfault_stacked_xpsr = stack_words[7];
+    hardfault_pc = hardfault_stacked_pc;
+  } else {
+    hardfault_pc = 0;
+    hardfault_stacked_pc = 0;
+    hardfault_stacked_lr = 0;
+    hardfault_stacked_xpsr = 0;
+  }
+
   __asm("BKPT #0\n");
 }
 
