@@ -57,10 +57,6 @@ typedef struct {
 
 #include "board.h"
 
-#ifndef __HAL_RCC_PWR_CLK_ENABLE
-#define __HAL_RCC_PWR_CLK_ENABLE()     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_PWR)
-#endif
-
 //--------------------------------------------------------------------+
 // MACRO TYPEDEF CONSTANT ENUM
 //--------------------------------------------------------------------+
@@ -104,8 +100,6 @@ void board_init(void) {
 
   /* Enable BusFault and SecureFault handlers (HardFault is default) */
   SCB->SHCSR |= (SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_SECUREFAULTENA_Msk);
-
-  __HAL_RCC_PWR_CLK_ENABLE();
 
   HAL_PWREx_EnableVddA();
   HAL_PWREx_EnableVddIO2();
@@ -163,6 +157,7 @@ void board_init(void) {
 
 
   __HAL_RCC_USB1_OTG_HS_CLK_ENABLE();
+  __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_EnableVddUSBVMEN();
   while(__HAL_PWR_GET_FLAG(PWR_FLAG_USB33RDY));
   HAL_PWREx_EnableVddUSB();

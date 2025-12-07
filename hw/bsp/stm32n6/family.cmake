@@ -21,7 +21,7 @@ set(FAMILY_MCUS STM32N6 CACHE INTERNAL "")
 # Port & Speed Selection
 # ----------------------
 if (NOT DEFINED RHPORT_DEVICE)
-  set(RHPORT_DEVICE 0)
+  set(RHPORT_DEVICE 1)
 endif ()
 if (NOT DEFINED RHPORT_HOST)
   set(RHPORT_HOST 1)
@@ -82,13 +82,7 @@ function(family_add_board BOARD_TARGET)
     BOARD_TUH_MAX_SPEED=${RHPORT_HOST_SPEED}
     SEGGER_RTT_SECTION="noncacheable_buffer"
     BUFFER_SIZE_UP=0x3000
-    STM32N657xx
     )
-
-
-  if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    # target_compile_options(${BOARD_TARGET} PUBLIC -mcmse)
-  endif()
 
   update_board(${BOARD_TARGET})
 endfunction()
