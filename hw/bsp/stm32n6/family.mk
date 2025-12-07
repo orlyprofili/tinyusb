@@ -12,7 +12,7 @@ CPU_CORE ?= cortex-m55
 # ----------------------
 # Port & Speed Selection
 # ----------------------
-RHPORT_DEVICE ?= 0
+RHPORT_DEVICE ?= 1
 RHPORT_HOST ?= 1
 
 ifndef RHPORT_DEVICE_SPEED
