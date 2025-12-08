@@ -38,6 +38,8 @@
 #endif
 
 #include "stm32n6xx_hal.h"
+#include <stddef.h>
+#include <stdint.h>
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
@@ -90,7 +92,17 @@ void USB1_OTG_HS_IRQHandler(void) {
   tusb_int_handler(0, true);
 }
 
+extern uint32_t __snoncacheable;
+extern uint32_t __enoncacheable;
+
 void board_init(void) {
+
+  // Zero the non-cacheable DMA region so TinyUSB/FIFO buffers start clean
+  if (&__enoncacheable > &__snoncacheable) {
+    size_t noncache_size =
+        (size_t)((uintptr_t)&__enoncacheable - (uintptr_t)&__snoncacheable);
+    memset((void *)&__snoncacheable, 0, noncache_size);
+  }
 
   /* Enable BusFault and SecureFault handlers (HardFault is default) */
   SCB->SHCSR |= (SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_SECUREFAULTENA_Msk);
