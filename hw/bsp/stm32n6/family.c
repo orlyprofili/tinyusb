@@ -86,14 +86,8 @@ static UART_HandleTypeDef UartHandle = {
 
 // Despite being call USB2_OTG_FS on some MCUs
 // OTG_FS is marked as RHPort0 by TinyUSB to be consistent across stm32 port
-void USB2_OTG_HS_IRQHandler(void) {
-  tusb_int_handler(0, true);
-}
-
-// Despite being call USB1_OTG_HS on some MCUs
-// OTG_HS is marked as RHPort1 by TinyUSB to be consistent across stm32 port
 void USB1_OTG_HS_IRQHandler(void) {
-  tusb_int_handler(1, true);
+  tusb_int_handler(0, true);
 }
 
 void board_init(void) {
@@ -201,6 +195,9 @@ void board_init(void) {
 #if CFG_TUH_ENABLED
   board_vbus_set(BOARD_TUH_RHPORT, 1);
 #endif
+//#if CFG_TUD_ENABLED
+//  board_vbus_set(BOARD_TUD_RHPORT, 1);
+//#endif
 }
 
 //--------------------------------------------------------------------+
