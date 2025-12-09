@@ -846,8 +846,10 @@ uint16_t audiod_open(uint8_t rhport, tusb_desc_interface_t const *itf_desc, uint
             AUDIO_SUBCLASS_CONTROL == itf_desc->bInterfaceSubClass);
 
   // Verify version is correct - this check can be omitted
-  TU_VERIFY(itf_desc->bInterfaceProtocol == AUDIO_INT_PROTOCOL_CODE_V1 ||
-            itf_desc->bInterfaceProtocol == AUDIO_INT_PROTOCOL_CODE_V2);
+  // Note: AUDIO_INT_PROTOCOL_CODE_V1 == 0x00 == AUDIO_FUNC_PROTOCOL_CODE_UNDEF (used by MIDI)
+  // To avoid audio driver incorrectly claiming MIDI's Audio Control interface,
+  // we only accept V2 protocol here. UAC1 devices should use the dedicated UAC1 driver path.
+  TU_VERIFY(itf_desc->bInterfaceProtocol == AUDIO_INT_PROTOCOL_CODE_V2);
 
   // Verify interrupt control EP is enabled if demanded by descriptor
   TU_ASSERT(itf_desc->bNumEndpoints <= 1);// 0 or 1 EPs are allowed
