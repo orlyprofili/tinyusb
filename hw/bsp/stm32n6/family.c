@@ -95,6 +95,38 @@ void USB1_OTG_HS_IRQHandler(void) {
 extern uint32_t __snoncacheable;
 extern uint32_t __enoncacheable;
 
+// Configure the MPU region used for non-cacheable USB/DMA buffers
+static void configure_noncacheable_region(void) {
+  const uint32_t start = (uint32_t) &__snoncacheable;
+  const uint32_t end = (uint32_t) &__enoncacheable;
+  if (end <= start) {
+    return;
+  }
+
+  // Program attribute slot 1 as non-cacheable normal memory
+  MPU_Attributes_InitTypeDef attr_cfg = {
+    .Number = MPU_ATTRIBUTES_NUMBER1,
+    .Attributes = INNER_OUTER(MPU_NOT_CACHEABLE),
+  };
+
+  MPU_Region_InitTypeDef region_cfg = {
+    .Enable = MPU_REGION_ENABLE,
+    .Number = MPU_REGION_NUMBER1,
+    .AttributesIndex = attr_cfg.Number,
+    .BaseAddress = start,
+    .LimitAddress = end - 1u,
+    .AccessPermission = MPU_REGION_ALL_RW,
+    .DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE,
+    .DisablePrivExec = MPU_PRIV_INSTRUCTION_ACCESS_DISABLE,
+    .IsShareable = MPU_ACCESS_INNER_SHAREABLE,
+  };
+
+  HAL_MPU_Disable();
+  HAL_MPU_ConfigMemoryAttributes(&attr_cfg);
+  HAL_MPU_ConfigRegion(&region_cfg);
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+}
+
 void board_init(void) {
 
   // Zero the non-cacheable DMA region so TinyUSB/FIFO buffers start clean
@@ -103,6 +135,8 @@ void board_init(void) {
         (size_t)((uintptr_t)&__enoncacheable - (uintptr_t)&__snoncacheable);
     memset((void *)&__snoncacheable, 0, noncache_size);
   }
+
+  configure_noncacheable_region();
 
   /* Enable BusFault and SecureFault handlers (HardFault is default) */
   SCB->SHCSR |= (SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_SECUREFAULTENA_Msk);
